@@ -20,7 +20,7 @@ class DpsstServices::TranscriptReader
   end
 
   def process_employment_history
-    records = []
+    records = DpsstServices::EmploymentParser.new(doc).process
 
     { employment_records: records }
   end
@@ -56,7 +56,7 @@ class DpsstServices::TranscriptReader
 
   def process_left_header
     cells = cells_from_table('table#ContentPlaceHolder1_ctlEmployeeHeader_tblHeaderLeft')
-    log_message("#{cells.count} cells in the left employeeheader table - expecting 4") if cells.count != 4
+    log_warning("#{cells.count} cells in the left employeeheader table - expecting 4") if cells.count != 4
 
     name_and_id = cells[0].split('ID:')
     name = name_and_id[0].strip_whitespace
@@ -74,7 +74,7 @@ class DpsstServices::TranscriptReader
 
   def process_right_header
     cells = cells_from_table('table#ContentPlaceHolder1_ctlEmployeeHeader_tblHeaderRight')
-    log_message("#{cells.count} cells in the right employeeheader table - expecting 8") if cells.count != 8
+    log_warning("#{cells.count} cells in the right employeeheader table - expecting 8") if cells.count != 8
 
     rank = cells[1].strip_whitespace if /rank/i.match(cells[0])
     level = cells[3].strip_whitespace if /level/i.match(cells[2])
@@ -94,12 +94,12 @@ class DpsstServices::TranscriptReader
     cells.map { |cell| cell.text.strip_whitespace }
   end
 
-  def log_message(message)
-    puts "===> #{message}"
+  def log_warning(message)
+    Rails.logger.warn(message)
   end
 
   def log_error(error)
-    puts "err> #{error}"
+    Rails.logger.error(error)
   end
 
   def parse_employment_status(s)

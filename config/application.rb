@@ -22,5 +22,11 @@ module DpsstMagnifier
     # Allow our service objects to be autoloaded
     config.autoload_paths << Rails.root.join("lib")
     config.autoload_paths << Rails.root.join("services")
+
+    # Allow our service objects to be eagerloaded
+    config.eager_load_paths << Rails.root.join("lib")
+    config.eager_load_paths << Rails.root.join("services")
+
+    config.logger = Logger.new(STDOUT)
   end
 end
