@@ -51,7 +51,7 @@ class DpsstServices::TranscriptReader
 
   def process_header
     attributes = process_left_header
-    attributes.merge(process_right_header)
+    { header_record: attributes.merge(process_right_header) }
   end
 
   def process_left_header
