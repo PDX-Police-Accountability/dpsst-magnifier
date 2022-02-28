@@ -8,7 +8,7 @@ namespace :dpsst do
     reader = DpsstServices::TranscriptReader.new(filename)
     reader.load_file
     results = reader.process
-    p results
+    pp results
 
     puts "==> End parsing #{filename}"
   end

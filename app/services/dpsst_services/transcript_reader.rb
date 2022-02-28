@@ -12,15 +12,41 @@ class DpsstServices::TranscriptReader
 
   def process
     process_header.
-      merge(process_employment_history)
+      merge(process_employment_history).
+      merge(process_employee_certification).
+      merge(process_employee_training).
+      merge(process_employee_attributes).
+      merge(process_employee_education)
   end
 
   def process_employment_history
-    attributes = {
-      employment_placeholder: 'Coming Soon'
-    }
+    records = []
 
-    attributes
+    { employment_records: records }
+  end
+
+  def process_employee_certification
+    records = []
+
+    { certification_records: records }
+  end
+
+  def process_employee_training
+    records = []
+
+    { training_records: records }
+  end
+
+  def process_employee_attributes
+    records = []
+
+    { attribute_records: records }
+  end
+
+  def process_employee_education
+    records = []
+
+    { education_records: records }
   end
 
   def process_header
