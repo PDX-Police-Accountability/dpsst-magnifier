@@ -26,13 +26,13 @@ class DpsstServices::TranscriptReader
   end
 
   def process_employee_certification
-    records = []
+    records = DpsstServices::EmployeeCertificationParser.new(doc).process
 
     { certification_records: records }
   end
 
   def process_employee_training
-    records = []
+    records = DpsstServices::EmployeeTrainingParser.new(doc).process
 
     { training_records: records }
   end

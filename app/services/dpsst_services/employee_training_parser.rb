@@ -1,4 +1,4 @@
-class DpsstServices::EmploymentParser
+class DpsstServices::EmployeeTrainingParser
   attr_reader :doc
 
   def initialize(doc)
@@ -8,7 +8,7 @@ class DpsstServices::EmploymentParser
   def process
     records = []
 
-    table_selector = 'table#ContentPlaceHolder1_ctlEmploymentHistory_gvwGrid'
+    table_selector = 'table#ContentPlaceHolder1_ctlEmployeeTraining_gvwGrid'
     rows = doc.css("#{table_selector} tr")
     rows.each do |row|
       cells = row.css('td')
@@ -31,15 +31,15 @@ class DpsstServices::EmploymentParser
       when 0
         record[:date] = text
       when 1
-        record[:agency] = text
+        record[:course] = text
       when 2
-        record[:action] = text
+        record[:title] = text
       when 3
-        record[:rank] = text
+        record[:status] = text
       when 4
-        record[:classification] = text
+        record[:score] = text
       when 5
-        record[:assignment] = text
+        record[:hours] = text
       else
         Rails.logger.error("Wrong number of cells processed in #{self.class}. index: #{index}. data: #{text}")
       end
