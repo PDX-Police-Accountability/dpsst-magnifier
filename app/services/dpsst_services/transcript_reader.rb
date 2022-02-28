@@ -38,13 +38,13 @@ class DpsstServices::TranscriptReader
   end
 
   def process_employee_attributes
-    records = []
+    records = DpsstServices::EmployeeAttributeParser.new(doc).process
 
     { attribute_records: records }
   end
 
   def process_employee_education
-    records = []
+    records = DpsstServices::EmployeeEducationParser.new(doc).process
 
     { education_records: records }
   end
