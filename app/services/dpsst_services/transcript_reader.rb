@@ -35,13 +35,13 @@ class DpsstServices::TranscriptReader
     name_and_id = cells[0].split('ID:')
     name = name_and_id[0].strip_whitespace
     dpsst_identifier = name_and_id[1].strip_whitespace
-    organization = cells[1]
+    agency = cells[1]
     employment_status = parse_employment_status(cells[2])
 
     {
       name: name,
       dpsst_identifier: dpsst_identifier,
-      organization: organization,
+      agency: agency,
       employment_status: employment_status
     }
   end
