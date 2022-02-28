@@ -18,5 +18,9 @@ module DpsstMagnifier
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Allow our service objects to be autoloaded
+    config.autoload_paths << Rails.root.join("lib")
+    config.autoload_paths << Rails.root.join("services")
   end
 end
