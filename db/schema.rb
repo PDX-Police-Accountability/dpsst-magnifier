@@ -10,12 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_28_230037) do
+ActiveRecord::Schema.define(version: 2022_02_28_230851) do
 
   create_table "officers", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "dpsst_identifier"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "source_transcripts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "transcript_id", null: false
+    t.text "data_hash"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["transcript_id"], name: "index_source_transcripts_on_transcript_id"
   end
 
   create_table "transcripts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -25,5 +33,6 @@ ActiveRecord::Schema.define(version: 2022_02_28_230037) do
     t.index ["officer_id"], name: "index_transcripts_on_officer_id"
   end
 
+  add_foreign_key "source_transcripts", "transcripts"
   add_foreign_key "transcripts", "officers"
 end
