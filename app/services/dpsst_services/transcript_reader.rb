@@ -8,45 +8,59 @@ class DpsstServices::TranscriptReader
 
   def load_file
     @doc = File.open(filename) { |f| Nokogiri::XML(f) }    
-    nil
   end
 
   def process
-    process_header
-    nil
+    process_header.
+      merge(process_employment_history)
+  end
+
+  def process_employment_history
+    attributes = {
+      employment_placeholder: 'Coming Soon'
+    }
+
+    attributes
   end
 
   def process_header
-    process_left_header
-    process_right_header
-    nil
+    attributes = process_left_header
+    attributes.merge(process_right_header)
   end
 
   def process_left_header
     cells = cells_from_table('table#ContentPlaceHolder1_ctlEmployeeHeader_tblHeaderLeft')
-    p cells
+    log_message("#{cells.count} cells in the left employeeheader table - expecting 4") if cells.count != 4
 
     name_and_id = cells[0].split('ID:')
     name = name_and_id[0].strip_whitespace
     dpsst_identifier = name_and_id[1].strip_whitespace
     organization = cells[1]
-    status = cells[2]
+    employment_status = parse_employment_status(cells[2])
 
-    puts "name: #{name}"
-    puts "dpsst_identifier: #{dpsst_identifier}"
-    puts "organization: #{organization}"
-    puts "status: #{status}"
-
-    log_message("#{cells.count} cells in the left employeeheader table - expecting 4") if cells.count != 4
-    nil
+    {
+      name: name,
+      dpsst_identifier: dpsst_identifier,
+      organization: organization,
+      employment_status: employment_status
+    }
   end
 
   def process_right_header
     cells = cells_from_table('table#ContentPlaceHolder1_ctlEmployeeHeader_tblHeaderRight')
-    p cells
-
     log_message("#{cells.count} cells in the right employeeheader table - expecting 8") if cells.count != 8
-    nil
+
+    rank = cells[1].strip_whitespace if /rank/i.match(cells[0])
+    level = cells[3].strip_whitespace if /level/i.match(cells[2])
+    classification = cells[5].strip_whitespace if /class/i.match(cells[4])
+    assignment = cells[7].strip_whitespace if /assign/i.match(cells[6])
+
+    {
+      rank: rank,
+      level: level,
+      classification: classification,
+      assignment: assignment
+    }
   end
 
   def cells_from_table(table_selector)
@@ -55,7 +69,15 @@ class DpsstServices::TranscriptReader
   end
 
   def log_message(message)
-    puts message
+    puts "===> #{message}"
+  end
+
+  def log_error(error)
+    puts "err> #{error}"
+  end
+
+  def parse_employment_status(s)
+    s.split(':')[1].to_s.strip_whitespace
   end
 
 end
