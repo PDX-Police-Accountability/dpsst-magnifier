@@ -7,4 +7,7 @@ RSpec.describe Transcript, type: :model do
     it { is_expected.to accept_nested_attributes_for(:source_transcript) }
   end
 
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:scraped_on) }
+  end
 end
