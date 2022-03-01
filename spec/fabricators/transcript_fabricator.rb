@@ -1,0 +1,2 @@
+Fabricator(:transcript) do
+end
