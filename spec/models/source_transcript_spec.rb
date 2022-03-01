@@ -5,4 +5,5 @@ RSpec.describe SourceTranscript, type: :model do
     it { is_expected.to belong_to(:transcript) }
   end
 
+  it { is_expected.to serialize(:data_hash).as(Hash) }
 end

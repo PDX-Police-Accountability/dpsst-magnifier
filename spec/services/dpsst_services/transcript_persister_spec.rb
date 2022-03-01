@@ -1,0 +1,23 @@
+require 'rails_helper'
+
+RSpec.describe DpsstServices::TranscriptPersister do
+  context 'valid transcript' do
+    let(:filename) { '56260-transcript.html' }
+    let(:file) { file_fixture(filename) }
+    let(:reader) { DpsstServices::TranscriptReader.new(file) }
+
+    before do
+      reader.load_file
+    end
+
+    describe '#persist' do
+      let(:hash) { reader.process }
+      let(:persister) { described_class.new(reader.process) }
+
+      it 'persists Transcript and SourceTranscript' do
+        expect{ persister.persist }.to change{ Transcript.count }.by(1).
+          and change{ SourceTranscript.count }.by(1)
+      end
+    end
+  end
+end 

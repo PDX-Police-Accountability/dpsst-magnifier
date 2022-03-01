@@ -1,5 +1,5 @@
 class Officer < ApplicationRecord
   has_many :transcripts
 
-  validates_presence_of :dpsst_identifier
+  validates :dpsst_identifier, presence: true, uniqueness: { case_sensitive: true }
 end
