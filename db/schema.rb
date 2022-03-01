@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 2022_03_01_085234) do
 
   create_table "source_transcripts", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "transcript_id", null: false
-    t.text "data_hash"
+    t.text "data_hash", size: :medium
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["transcript_id"], name: "index_source_transcripts_on_transcript_id"

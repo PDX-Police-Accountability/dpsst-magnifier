@@ -10,9 +10,13 @@ namespace :dpsst do
   task :persist_one, [:filename, :scraped_on] => [:environment] do |t, args|
     filename = args[:filename]
     scraped_on = Date.parse(args[:scraped_on])
-    result = read_transcript_file(filename)
-    persister = DpsstServices::TranscriptPersister.new(result, scraped_on)
-    persister.persist
+    read_and_persist_transcript_file(filename, scraped_on)
+  end
+
+  task :process_directory, [:directoryname, :scraped_on] => [:environment] do |t, args|
+    directoryname = args[:directoryname]
+    scraped_on = Date.parse(args[:scraped_on])
+    process_directory(directoryname, scraped_on)
   end
 
   def read_transcript_file(filename)
@@ -25,6 +29,18 @@ namespace :dpsst do
     puts "==> End read_transcript_file: #{filename}"
 
     result
+  end
+
+  def read_and_persist_transcript_file(filename, scraped_on)
+    result = read_transcript_file(filename)
+    persister = DpsstServices::TranscriptPersister.new(result, scraped_on)
+    persister.persist
+  end
+
+  def process_directory(directoryname, scraped_on)
+    Dir.glob("#{directoryname}/*-transcript.html").each do |filename|
+      read_and_persist_transcript_file(filename, scraped_on)
+    end
   end
 
 end
