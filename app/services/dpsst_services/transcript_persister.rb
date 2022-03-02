@@ -8,7 +8,7 @@ class DpsstServices::TranscriptPersister
   end
 
   def persist
-    officer = Officer.create_or_find_by(dpsst_identifier: dpsst_identifier)
+    officer = Officer.find_or_create_by(dpsst_identifier: dpsst_identifier)
     officer.transcripts.create(
       scraped_on: scraped_on,
       source_transcript_attributes: {
