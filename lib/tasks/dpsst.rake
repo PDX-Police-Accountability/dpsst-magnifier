@@ -13,6 +13,13 @@ namespace :dpsst do
     read_and_persist_transcript_file(filename, scraped_on)
   end
 
+  task :markdown_one, [:filename, :scraped_on, :output_filename] => [:environment] do |t, args|
+    filename = args[:filename]
+    output_filename = args[:output_filename]
+    scraped_on = Date.parse(args[:scraped_on])
+    read_and_markdown_transcript_file(filename, scraped_on, output_filename)
+  end
+
   task :process_directory, [:directoryname, :scraped_on] => [:environment] do |t, args|
     directoryname = args[:directoryname]
     scraped_on = Date.parse(args[:scraped_on])
@@ -35,6 +42,12 @@ namespace :dpsst do
     result = read_transcript_file(filename)
     persister = DpsstServices::TranscriptPersister.new(result, scraped_on)
     persister.persist
+  end
+
+  def read_and_markdown_transcript_file(filename, scraped_on, output_filename)
+    result = read_transcript_file(filename)
+    markdowner = DpsstServices::TranscriptMarkdowner.new(result, scraped_on, output_filename)
+    markdowner.execute
   end
 
   def process_directory(directoryname, scraped_on)
