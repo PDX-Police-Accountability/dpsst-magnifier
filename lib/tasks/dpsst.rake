@@ -46,7 +46,7 @@ namespace :dpsst do
 
   def read_and_yamlize_transcript_file(filename, scraped_on, output_filename)
     result = read_transcript_file(filename)
-    yamlizer = DpsstServices::Transcriptyamlizer.new(result, scraped_on, output_filename)
+    yamlizer = DpsstServices::TranscriptYamlizer.new(result, scraped_on, output_filename)
     yamlizer.execute
   end
 
