@@ -1,4 +1,4 @@
-class DpsstServices::TranscriptMarkdowner
+class DpsstServices::TranscriptYamlizer
   attr_reader :transcript_hash
   attr_reader :scraped_on
   attr_reader :output_filename

@@ -13,11 +13,11 @@ namespace :dpsst do
     read_and_persist_transcript_file(filename, scraped_on)
   end
 
-  task :markdown_one, [:filename, :scraped_on, :output_filename] => [:environment] do |t, args|
+  task :yamlize_one, [:filename, :scraped_on, :output_filename] => [:environment] do |t, args|
     filename = args[:filename]
     output_filename = args[:output_filename]
     scraped_on = Date.parse(args[:scraped_on])
-    read_and_markdown_transcript_file(filename, scraped_on, output_filename)
+    read_and_yamlize_transcript_file(filename, scraped_on, output_filename)
   end
 
   task :process_directory, [:directoryname, :scraped_on] => [:environment] do |t, args|
@@ -44,10 +44,10 @@ namespace :dpsst do
     persister.persist
   end
 
-  def read_and_markdown_transcript_file(filename, scraped_on, output_filename)
+  def read_and_yamlize_transcript_file(filename, scraped_on, output_filename)
     result = read_transcript_file(filename)
-    markdowner = DpsstServices::TranscriptMarkdowner.new(result, scraped_on, output_filename)
-    markdowner.execute
+    yamlizer = DpsstServices::Transcriptyamlizer.new(result, scraped_on, output_filename)
+    yamlizer.execute
   end
 
   def process_directory(directoryname, scraped_on)
