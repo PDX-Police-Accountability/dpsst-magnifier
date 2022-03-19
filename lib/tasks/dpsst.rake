@@ -20,6 +20,13 @@ namespace :dpsst do
     read_and_yamlize_transcript_file(filename, scraped_on, output_filename)
   end
 
+  task :markdown_one, [:filename, :scraped_on, :output_filename] => [:environment] do |t, args|
+    filename = args[:filename]
+    output_filename = args[:output_filename]
+    scraped_on = Date.parse(args[:scraped_on])
+    read_and_markdown_transcript_file(filename, scraped_on, output_filename)
+  end
+
   task :persist_directory, [:directoryname, :scraped_on] => [:environment] do |t, args|
     directoryname = args[:directoryname]
     scraped_on = Date.parse(args[:scraped_on])
