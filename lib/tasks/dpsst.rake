@@ -33,6 +33,13 @@ namespace :dpsst do
     yamlize_directory(directoryname, scraped_on, output_directoryname)
   end
 
+  task :markdown_directory, [:directoryname, :scraped_on, :output_directoryname] => [:environment] do |t, args|
+    directoryname = args[:directoryname]
+    output_directoryname = args[:output_directoryname]
+    scraped_on = Date.parse(args[:scraped_on])
+    markdown_directory(directoryname, scraped_on, output_directoryname)
+  end
+
   def read_transcript_file(filename)
     puts "==> Begin read_transcript_file: #{filename}"
 
@@ -57,6 +64,12 @@ namespace :dpsst do
     yamlizer.execute
   end
 
+  def read_and_markdown_transcript_file(filename, scraped_on, output_filename)
+    result = read_transcript_file(filename)
+    markdowner = DpsstServices::TranscriptMarkdowner.new(result, scraped_on, output_filename)
+    markdowner.execute
+  end
+
   def persist_directory(directoryname, scraped_on)
     Dir.glob("#{directoryname}/*-transcript.html").each do |filename|
       read_and_persist_transcript_file(filename, scraped_on)
@@ -67,6 +80,13 @@ namespace :dpsst do
     Dir.glob("#{directoryname}/*-transcript.html").each do |filename|
       output_filename = transform_full_path_to_file(filename, output_directoryname, 'yml')
       read_and_yamlize_transcript_file(filename, scraped_on, output_filename)
+    end
+  end
+
+  def markdown_directory(directoryname, scraped_on, output_directoryname)
+    Dir.glob("#{directoryname}/*-transcript.html").each do |filename|
+      output_filename = transform_full_path_to_file(filename, output_directoryname, 'md')
+      read_and_markdown_transcript_file(filename, scraped_on, output_filename)
     end
   end
 
