@@ -14,6 +14,7 @@ process_directory() {
   git add .
   git commit -m "Processed on $date_string."
   git tag "processed-$date_string"
+  git push
   popd
 }
 
