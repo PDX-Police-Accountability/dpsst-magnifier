@@ -10,8 +10,18 @@ class DpsstServices::TranscriptReader
     @doc = File.open(filename) { |f| Nokogiri::XML(f) }    
   end
 
+  def missing_transcript
+    {
+      missing_transcript: true
+    }
+  end
+
   def process
-    process_header.
+    header = process_header
+
+    return missing_transcript if header[:header_record].empty?
+
+    header.
       merge(process_employment_history).
       merge(process_employee_certification).
       merge(process_employee_training).
@@ -56,7 +66,11 @@ class DpsstServices::TranscriptReader
 
   def process_left_header
     cells = cells_from_table('table#ContentPlaceHolder1_ctlEmployeeHeader_tblHeaderLeft')
-    log_warning("#{cells.count} cells in the left employeeheader table - expecting 4") if cells.count != 4
+
+    if cells.count != 4
+      log_warning("#{cells.count} cells in the left employeeheader table - expecting 4")
+      return {}
+    end
 
     name_and_id = cells[0].split('ID:')
     name = name_and_id[0].strip_whitespace
@@ -74,7 +88,11 @@ class DpsstServices::TranscriptReader
 
   def process_right_header
     cells = cells_from_table('table#ContentPlaceHolder1_ctlEmployeeHeader_tblHeaderRight')
-    log_warning("#{cells.count} cells in the right employeeheader table - expecting 8") if cells.count != 8
+
+    if cells.count != 8
+      log_warning("#{cells.count} cells in the right employeeheader table - expecting 8")
+      return {}
+    end
 
     rank = cells[1].strip_whitespace if /rank/i.match(cells[0])
     level = cells[3].strip_whitespace if /level/i.match(cells[2])

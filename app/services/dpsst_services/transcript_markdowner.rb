@@ -19,6 +19,8 @@ class DpsstServices::TranscriptMarkdowner
   end
 
   def hash_to_markdown
+    return "## missing_transcript" + "\n" if transcript_hash[:missing_transcript]
+
     md = header_markdown
     md << employment_markdown
     md << certification_markdown
