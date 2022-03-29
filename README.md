@@ -1,24 +1,17 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## dpsst-magnifier
 
-Things you may want to cover:
+The dpsst-magnifier is a Ruby on Rails project that transforms HTML pulled from Oregon's [Criminal Justice Information Records Inquiry System (CJ IRIS)](https://www.bpl-orsnapshot.net/PublicInquiry_CJ/EmployeeSearch.aspx) into multiple formats for ease of use by the general public.
 
-* Ruby version
+All the data processed by the dpsst-magnifier is publicly accessible via the State of Oregon's [Department of Public Safety Standards & Training (DPSST)](https://www.oregon.gov/dpsst/pages/default.aspx) web site.
 
-* System dependencies
+## Developer notes
 
-* Configuration
+### Getting started
 
-* Database creation
+TODO...
 
-* Database initialization
+### Usage
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+TODO...
