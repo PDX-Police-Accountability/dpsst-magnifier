@@ -1,4 +1,6 @@
 class DpsstServices::TranscriptMarkdowner
+  include DpsstServices::MarkdownTable
+
   attr_reader :transcript_hash
   attr_reader :scraped_on
   attr_reader :output_filename
@@ -31,17 +33,6 @@ class DpsstServices::TranscriptMarkdowner
     md
   end
 
-  def table_header(columns)
-    first_row = '| ' + columns.join(' | ') + ' |'
-    second_row = first_row.gsub(/[\w]/, '-')
-
-    first_row + "\n" + second_row + "\n"
-  end
-
-  def table_row(cells)
-    '| ' + cells.join(' | ') + ' |' + "\n"
-  end
-
   def header_markdown
     h = transcript_hash[:header_record]
 
@@ -53,15 +44,6 @@ class DpsstServices::TranscriptMarkdowner
     end
 
     md
-  end
-
-  def array_to_table_markdown(title, cols, a)
-    t = "## #{title}" + "\n"
-    th = table_header(cols.map(&:to_s))
-
-    a.each_with_object(t + th) do |h, md|
-      md << table_row(h.slice(*cols).values)
-    end
   end
 
   def employment_markdown

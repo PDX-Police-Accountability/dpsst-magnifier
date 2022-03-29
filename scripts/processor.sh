@@ -4,11 +4,13 @@ process_directory() {
   date_string=$1
   data_project_dir="../dpsst-data"
   input_dir="../dpsst-scraper/scraped-data/$date_string"
-  yaml_output_dir="$data_project_dir/officers/yaml"
-  markdown_output_dir="$data_project_dir/officers/markdown"
+  yaml_dir="$data_project_dir/officers/yaml"
+  markdown_dir="$data_project_dir/officers/markdown"
+  summary_dir="$data_project_dir/officers/summary"
 
-  bin/rake dpsst:yamlize_directory[$input_dir,$date_string,$yaml_output_dir]
-  bin/rake dpsst:markdown_directory[$input_dir,$date_string,$markdown_output_dir]
+  bin/rake dpsst:yamlize_directory[$input_dir,$date_string,$yaml_dir]
+  bin/rake dpsst:markdown_directory[$input_dir,$date_string,$markdown_dir]
+  bin/rake dpsst:summarize_directories[$date_string,$yaml_dir,$markdown_dir,$summary_dir]
 
   pushd $data_project_dir
   git add .
