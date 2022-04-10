@@ -26,9 +26,11 @@ class DpsstServices::TranscriptSummarizer
     end
   end
 
-  def write_summary_file(columns, records, sort_column)
+  def write_summary_file(cols, records, sort_column)
+    table_columns = cols + [:links]
+
     title = "Transcripts (sorted by #{sort_column.to_s.humanize.downcase})"
-    md = array_to_table_markdown(title, columns, records.sort_by { |h| h[sort_column] }, :column_header_transform )
+    md = array_to_table_markdown(title, table_columns, records.sort_by { |h| h[sort_column] }, :column_header_transform )
     File.write(output_filename_for_sort_column(sort_column), md)
   end
 
@@ -43,14 +45,14 @@ class DpsstServices::TranscriptSummarizer
                  yaml[:header_record].reject { |key, _val| ignored_columns.include?(key) }
                end
 
-      record[:dpsst_identifier] = link_to_markdown(record[:dpsst_identifier])
+      record[:links] = file_links(record[:dpsst_identifier])
       record
     end
   end
 
   def missing_transcript_record(dpsst_id)
     {
-      name: '* MISSING TRANSCRIPT',
+      name: '* MISSING',
       dpsst_identifier: dpsst_id,
       agency: '',
       employment_status: '',
@@ -64,11 +66,18 @@ class DpsstServices::TranscriptSummarizer
   end
 
   def link_to_markdown(dpsst_identifier)
-    "[#{dpsst_identifier}](../markdown/#{dpsst_identifier}-transcript.md)"
+    "[md](../markdown/#{dpsst_identifier}-transcript.md)"
   end
 
   def link_to_yaml(dpsst_identifier)
-    "[#{dpsst_identifier}](../yaml/#{dpsst_identifier}-transcript.yml)"
+    "[yaml](../yaml/#{dpsst_identifier}-transcript.yml)"
+  end
+
+  def file_links(dpsst_identifier)
+    [
+      link_to_markdown(dpsst_identifier),
+      link_to_yaml(dpsst_identifier)
+    ].join(' - ')
   end
 
   def output_filename_for_sort_column(col)
@@ -76,7 +85,13 @@ class DpsstServices::TranscriptSummarizer
   end
 
   def column_header_transform(col)
-    "[#{col.to_s.humanize.downcase}](./officer-transcripts-by-#{col.to_s.dasherize}.md)"
+    column_text = col.to_s.humanize.downcase
+
+    if columns.include?(col)
+      "[#{column_text}](./officer-transcripts-by-#{col.to_s.dasherize}.md)"
+    else
+      column_text
+    end
   end
 
 end
