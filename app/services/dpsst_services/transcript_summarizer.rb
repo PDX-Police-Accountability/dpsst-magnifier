@@ -22,11 +22,25 @@ class DpsstServices::TranscriptSummarizer
 
     columns.each do |col|
       puts "--> Doing #{col} with #{records.count} records..."
-      write_summary_file(columns, records, col)
+      write_summary_markdown_file(columns, records, col)
+    end
+
+    write_summary_tsv(columns, records)
+    nil
+  end
+
+  def write_summary_tsv(cols, records)
+    headers = columns.map(&:to_s)
+
+    CSV.open("#{summary_dir}/officer-transcripts.tsv", "w", col_sep: "\t") do |tsv|
+      tsv << headers
+      records.each do |row|
+        tsv << row.values[0..-2] # Leave off the :links column
+      end
     end
   end
 
-  def write_summary_file(cols, records, sort_column)
+  def write_summary_markdown_file(cols, records, sort_column)
     table_columns = cols + [:links]
 
     title = "Transcripts (sorted by #{sort_column.to_s.humanize.downcase})"
