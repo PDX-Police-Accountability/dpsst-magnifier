@@ -47,12 +47,19 @@ namespace :dpsst do
     markdown_directory(directoryname, scraped_on, output_directoryname)
   end
 
-  task :summarize_directories, [:scraped_on, :yaml_dir, :markdown_dir, :summary_dir] => [:environment] do |t, args|
+  task :summarize_directories, [:scraped_on, :yaml_dir, :summary_dir] => [:environment] do |t, args|
     scraped_on = Date.parse(args[:scraped_on])
     yaml_dir = args[:yaml_dir]
-    markdown_dir = args[:markdown_dir]
     summary_dir = args[:summary_dir]
-    summarizer = DpsstServices::TranscriptSummarizer.new(scraped_on, yaml_dir, markdown_dir, summary_dir)
+    summarizer = DpsstServices::TranscriptSummarizer.new(scraped_on, yaml_dir, summary_dir)
+    summarizer.execute
+  end
+
+  task :summarize_training, [:scraped_on, :yaml_dir, :summary_dir] => [:environment] do |t, args|
+    scraped_on = Date.parse(args[:scraped_on])
+    yaml_dir = args[:yaml_dir]
+    summary_dir = args[:summary_dir]
+    summarizer = DpsstServices::TrainingSummarizer.new(scraped_on, yaml_dir, summary_dir)
     summarizer.execute
   end
 

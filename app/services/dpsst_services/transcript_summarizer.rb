@@ -1,17 +1,16 @@
 class DpsstServices::TranscriptSummarizer
   include DpsstServices::MarkdownTable
+  include DpsstServices::DpsstIdentifier
 
   attr_reader :scraped_on
   attr_reader :yaml_dir
-  attr_reader :markdown_dir
   attr_reader :summary_dir
   attr_reader :columns
   attr_reader :ignored_columns
 
-  def initialize(scraped_on, yaml_dir, markdown_dir, summary_dir)
+  def initialize(scraped_on, yaml_dir, summary_dir)
     @scraped_on = scraped_on
     @yaml_dir = yaml_dir
-    @markdown_dir = markdown_dir
     @summary_dir = summary_dir
     @columns = [:name, :dpsst_identifier, :agency, :employment_status, :rank]
     @ignored_columns = [:level, :classification, :assignment]
@@ -30,7 +29,7 @@ class DpsstServices::TranscriptSummarizer
   end
 
   def write_summary_tsv(cols, records)
-    headers = columns.map(&:to_s)
+    headers = cols.map(&:to_s)
 
     CSV.open("#{summary_dir}/officer-transcripts.tsv", "w", col_sep: "\t") do |tsv|
       tsv << headers
@@ -50,7 +49,7 @@ class DpsstServices::TranscriptSummarizer
 
   def ingest_transcripts
     Dir.glob("#{yaml_dir}/*-transcript.yml").sort.map do |filename|
-      dpsst_id = extract_dpsst_id(filename)
+      dpsst_id = extract_id_from_filename(filename)
       yaml = YAML.load_file(filename)
 
       record = if yaml[:missing_transcript]
@@ -72,11 +71,6 @@ class DpsstServices::TranscriptSummarizer
       employment_status: '',
       rank: ''
     }
-  end
-
-  def extract_dpsst_id(filename)
-    m = /\/(\d*)-transcript.yml/.match(filename)
-    m.captures.first
   end
 
   def link_to_markdown(dpsst_identifier)
