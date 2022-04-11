@@ -1,6 +1,6 @@
 module DpsstServices::MarkdownTable
 
-  def table_header(columns, column_header_transformation)
+  def table_header(columns, column_header_transformation = nil)
     cols = columns.map do |col|
       if column_header_transformation
         self.send(column_header_transformation, col)
