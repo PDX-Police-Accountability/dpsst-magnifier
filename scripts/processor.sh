@@ -11,6 +11,7 @@ process_directory() {
   bin/rake dpsst:yamlize_directory[$input_dir,$date_string,$yaml_dir]
   bin/rake dpsst:markdown_directory[$input_dir,$date_string,$markdown_dir]
   bin/rake dpsst:summarize_directories[$date_string,$yaml_dir,$summary_dir]
+  bin/rake dpsst:summarize_training[$date_string,$yaml_dir,$summary_dir]
 
   pushd $data_project_dir
   git add .
