@@ -9,7 +9,9 @@ RSpec.describe DpsstServices::TranscriptSummarizer do
 
     it 'builds multiple summaries' do
       allow(summarizer).to receive(:write_summary_markdown_file)
-      allow(summarizer).to receive(:write_summary_tsv)
+      allow(summarizer).to receive(:write_summary_tsv_all)
+      allow(summarizer).to receive(:write_summary_tsv_active)
+      allow(summarizer).to receive(:write_summary_tsv_inactive)
 
       summarizer.execute
 
@@ -20,7 +22,21 @@ RSpec.describe DpsstServices::TranscriptSummarizer do
         with(anything, anything, :employment_status).
         with(anything, anything, :rank)
 
-      expect(summarizer).to have_received(:write_summary_tsv).with([:name, :dpsst_identifier, :agency, :employment_status, :rank], anything)
+      expect(summarizer).to have_received(:write_summary_tsv_all).with([:name, :dpsst_identifier, :agency, :employment_status, :rank], anything)
+      expect(summarizer).to have_received(:write_summary_tsv_active).with([:name, :dpsst_identifier, :agency, :employment_status, :rank], anything)
+      expect(summarizer).to have_received(:write_summary_tsv_inactive).with([:name, :dpsst_identifier, :agency, :employment_status, :rank], anything)
+    end
+
+    xit 'includes all officers in the summary' do
+
+    end
+
+    xit 'includes only active officers in the active officer summary' do
+
+    end
+
+    xit 'includes only inactive officers in the inactive officer summary' do
+
     end
 
   end

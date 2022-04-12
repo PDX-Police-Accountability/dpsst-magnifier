@@ -24,19 +24,33 @@ class DpsstServices::TranscriptSummarizer
       write_summary_markdown_file(columns, records, col)
     end
 
-    write_summary_tsv(columns, records)
+    write_summary_tsv_all(columns, records)
+    write_summary_tsv_active(columns, records)
+    write_summary_tsv_inactive(columns, records)
     nil
   end
 
-  def write_summary_tsv(cols, records)
+  def write_tsv(filename, cols, records)
     headers = cols.map(&:to_s)
 
-    CSV.open("#{summary_dir}/officer-transcripts.tsv", "w", col_sep: "\t") do |tsv|
+    CSV.open(filename, "w", col_sep: "\t") do |tsv|
       tsv << headers
       records.each do |row|
         tsv << row.values[0..-2] # Leave off the :links column
       end
     end
+  end
+
+  def write_summary_tsv_all(cols, records)
+    write_tsv("#{summary_dir}/officer-transcripts.tsv", cols, records)
+  end
+
+  def write_summary_tsv_active(cols, records)
+    write_tsv("#{summary_dir}/officer-transcripts-active.tsv", cols, records.select { |row| row[:employment_status].casecmp('active') == 0 })
+  end
+
+  def write_summary_tsv_inactive(cols, records)
+    write_tsv("#{summary_dir}/officer-transcripts-inactive.tsv", cols, records.select { |row| row[:employment_status].casecmp('inactive') == 0 })
   end
 
   def write_summary_markdown_file(cols, records, sort_column)
