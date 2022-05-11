@@ -24,10 +24,23 @@ class DpsstServices::TranscriptSummarizer
       write_summary_markdown_file(columns, records, col)
     end
 
+    write_summary_json_data_array(columns, records)
     write_summary_tsv_all(columns, records)
     write_summary_tsv_active(columns, records)
     write_summary_tsv_inactive(columns, records)
     nil
+  end
+
+  def write_summary_json_data_array(cols, records)
+    filename = "#{summary_dir}/officer-transcripts.json"
+
+    a = records.map do |row|
+      row.values[0..-2] # Leave off the :links column
+    end
+
+    File.open(filename, "w") do |f|
+      f.write({ data: a }.to_json)
+    end
   end
 
   def write_tsv(filename, cols, records)
