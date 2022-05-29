@@ -7,7 +7,7 @@ process_directory() {
   yaml_dir="$data_project_dir/officers/yaml"
   markdown_dir="$data_project_dir/officers/markdown"
   summary_dir="$data_project_dir/officers/summary"
-  jekyll_data_dir="$data_project_dir/docs/data"
+  jekyll_data_dir="$data_project_dir/docs/api-data"
 
   bin/rake dpsst:yamlize_directory[$input_dir,$date_string,$yaml_dir]
   bin/rake dpsst:markdown_directory[$input_dir,$date_string,$markdown_dir]
