@@ -6,14 +6,14 @@ class DpsstServices::TranscriptSummarizer
   attr_reader :yaml_dir
   attr_reader :summary_dir
   attr_reader :columns
-  attr_reader :ignored_columns
+  attr_reader :ignored_header_columns
 
   def initialize(scraped_on, yaml_dir, summary_dir)
     @scraped_on = scraped_on
     @yaml_dir = yaml_dir
     @summary_dir = summary_dir
-    @columns = [:name, :dpsst_identifier, :agency, :employment_status, :rank]
-    @ignored_columns = [:level, :classification, :assignment]
+    @columns = [:name, :dpsst_identifier, :agency, :employment_status, :rank, :last_action, :last_action_date]
+    @ignored_header_columns = [:level, :classification, :assignment]
   end
 
   def execute
@@ -79,15 +79,39 @@ class DpsstServices::TranscriptSummarizer
       dpsst_id = extract_id_from_filename(filename)
       yaml = YAML.load_file(filename)
 
-      record = if yaml[:missing_transcript]
-                 missing_transcript_record(dpsst_id)
-               else
-                 yaml[:header_record].reject { |key, _val| ignored_columns.include?(key) }
-               end
+puts "   ===> #{dpsst_id}"
 
-      record[:links] = file_links(record[:dpsst_identifier])
-      record
+      summarize_transcript(dpsst_id, yaml)
     end
+  end
+
+  def summarize_transcript(dpsst_id, yaml)
+    if yaml[:missing_transcript]
+      record = missing_transcript_record(dpsst_id)
+    else
+      record = yaml[:header_record].reject { |key, _val| ignored_header_columns.include?(key) }
+
+      latest_agency_record = yaml[:employment_records].select do |r|
+        r[:agency] == 'Portland Police Bureau'
+      end.sort do |a, b|
+        Date.strptime(b[:date], '%m/%d/%Y') <=> Date.strptime(a[:date], '%m/%d/%Y')
+      end.first
+
+      record[:last_action] = latest_agency_record[:action]
+
+      last_action_date = ''
+
+      begin  
+        last_action_date = Date.strptime(latest_agency_record[:date], '%m/%d/%Y').strftime('%Y-%m-%d')
+      rescue Date::Error => _date_error
+      rescue TypeError => _type_error
+      end
+
+      record[:last_action_date] = last_action_date
+    end
+
+    record[:links] = file_links(record[:dpsst_identifier])
+    record
   end
 
   def missing_transcript_record(dpsst_id)
@@ -96,7 +120,9 @@ class DpsstServices::TranscriptSummarizer
       dpsst_identifier: dpsst_id,
       agency: '',
       employment_status: '',
-      rank: ''
+      rank: '',
+      last_action: '',
+      last_action_date: ''
     }
   end
 

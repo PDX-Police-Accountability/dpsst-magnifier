@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe DpsstServices::TranscriptReader do
   context 'existing transcript file' do
-    let(:filename) { '56260-transcript.html' }
+    let(:filename) { 'html/56260-transcript.html' }
     let(:file) { file_fixture(filename) }
     let(:reader) { described_class.new(file) }
 

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe DpsstServices::TranscriptPersister do
   context 'valid transcript' do
     let(:scraped_on_date) { Date.parse('2022-07-11') }
-    let(:filename) { '56260-transcript.html' }
+    let(:filename) { 'html/56260-transcript.html' }
     let(:file) { file_fixture(filename) }
     let(:reader) { DpsstServices::TranscriptReader.new(file) }
 
