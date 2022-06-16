@@ -12,8 +12,8 @@ class DpsstServices::TranscriptSummarizer
     @scraped_on = scraped_on
     @yaml_dir = yaml_dir
     @summary_dir = summary_dir
-    @columns = [:name, :dpsst_identifier, :agency, :employment_status, :rank, :last_action, :last_action_date]
-    @ignored_header_columns = [:level, :classification, :assignment]
+    @columns = %w(name dpsst_identifier agency employment_status rank last_action last_action_date)
+    @ignored_header_columns = %w(level classification assignment)
   end
 
   def execute
@@ -35,7 +35,7 @@ class DpsstServices::TranscriptSummarizer
     filename = "#{summary_dir}/officer-transcripts.json"
 
     a = records.map do |row|
-      row.values[0..-2] # Leave off the :links column
+      row.values[0..-2] # Leave off the links column
     end
 
     File.open(filename, "w") do |f|
@@ -44,12 +44,10 @@ class DpsstServices::TranscriptSummarizer
   end
 
   def write_tsv(filename, cols, records)
-    headers = cols.map(&:to_s)
-
     CSV.open(filename, "w", col_sep: "\t") do |tsv|
-      tsv << headers
+      tsv << cols
       records.each do |row|
-        tsv << row.values[0..-2] # Leave off the :links column
+        tsv << row.values[0..-2] # Leave off the links column
       end
     end
   end
@@ -59,15 +57,15 @@ class DpsstServices::TranscriptSummarizer
   end
 
   def write_summary_tsv_active(cols, records)
-    write_tsv("#{summary_dir}/officer-transcripts-active.tsv", cols, records.select { |row| row[:employment_status].casecmp('active') == 0 })
+    write_tsv("#{summary_dir}/officer-transcripts-active.tsv", cols, records.select { |row| row['employment_status'].casecmp('active') == 0 })
   end
 
   def write_summary_tsv_inactive(cols, records)
-    write_tsv("#{summary_dir}/officer-transcripts-inactive.tsv", cols, records.select { |row| row[:employment_status].casecmp('inactive') == 0 })
+    write_tsv("#{summary_dir}/officer-transcripts-inactive.tsv", cols, records.select { |row| row['employment_status'].casecmp('inactive') == 0 })
   end
 
   def write_summary_markdown_file(cols, records, sort_column)
-    table_columns = cols + [:links]
+    table_columns = cols + ['links']
 
     title = "Transcripts (sorted by #{sort_column.to_s.humanize.downcase})"
     md = array_to_table_markdown(title, table_columns, records.sort_by { |h| h[sort_column] }, :column_header_transform )
@@ -86,43 +84,43 @@ puts "   ===> #{dpsst_id}"
   end
 
   def summarize_transcript(dpsst_id, yaml)
-    if yaml[:missing_transcript]
+    if yaml['missing_transcript']
       record = missing_transcript_record(dpsst_id)
     else
-      record = yaml[:header_record].reject { |key, _val| ignored_header_columns.include?(key) }
+      record = yaml['header_record'].reject { |key, _val| ignored_header_columns.include?(key) }
 
-      latest_agency_record = yaml[:employment_records].select do |r|
-        r[:agency] == 'Portland Police Bureau'
+      latest_agency_record = yaml['employment_records'].select do |r|
+        r['agency'] == 'Portland Police Bureau'
       end.sort do |a, b|
-        Date.strptime(b[:date], '%m/%d/%Y') <=> Date.strptime(a[:date], '%m/%d/%Y')
+        Date.strptime(b['date'], '%m/%d/%Y') <=> Date.strptime(a['date'], '%m/%d/%Y')
       end.first
 
-      record[:last_action] = latest_agency_record[:action]
+      record['last_action'] = latest_agency_record['action']
 
       last_action_date = ''
 
       begin  
-        last_action_date = Date.strptime(latest_agency_record[:date], '%m/%d/%Y').strftime('%Y-%m-%d')
+        last_action_date = Date.strptime(latest_agency_record['date'], '%m/%d/%Y').strftime('%Y-%m-%d')
       rescue Date::Error => _date_error
       rescue TypeError => _type_error
       end
 
-      record[:last_action_date] = last_action_date
+      record['last_action_date'] = last_action_date
     end
 
-    record[:links] = file_links(record[:dpsst_identifier])
+    record['links'] = file_links(record['dpsst_identifier'])
     record
   end
 
   def missing_transcript_record(dpsst_id)
     {
-      name: '* MISSING',
-      dpsst_identifier: dpsst_id,
-      agency: '',
-      employment_status: '',
-      rank: '',
-      last_action: '',
-      last_action_date: ''
+      'name' => '* MISSING',
+      'dpsst_identifier' => dpsst_id,
+      'agency' => '',
+      'employment_status' => '',
+      'rank' => '',
+      'last_action' => '',
+      'last_action_date' => ''
     }
   end
 

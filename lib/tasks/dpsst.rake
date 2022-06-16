@@ -63,6 +63,14 @@ namespace :dpsst do
     summarizer.execute
   end
 
+  task :jekyllize_roster, [:yaml_dir, :jekyll_yaml_dir, :jekyll_officer_collection_dir] => [:environment] do |t, args|
+    yaml_dir = args[:yaml_dir]
+    jekyll_yaml_dir = args[:jekyll_yaml_dir]
+    jekyll_officer_collection_dir = args[:jekyll_officer_collection_dir]
+    jekyllizer = DpsstServices::RosterJekyllizer.new(yaml_dir, jekyll_yaml_dir, jekyll_officer_collection_dir)
+    jekyllizer.execute
+  end
+
   def read_transcript_file(filename)
     puts "==> Begin read_transcript_file: #{filename}"
 

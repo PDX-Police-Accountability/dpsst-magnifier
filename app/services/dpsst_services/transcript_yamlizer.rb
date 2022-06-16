@@ -10,11 +10,7 @@ class DpsstServices::TranscriptYamlizer
   end
 
   def execute
-    File.write(output_filename, transcript_hash.to_yaml)
-  end
-
-  def dpsst_identifier
-    @transcript_hash.dig(:header_record, :dpsst_identifier)
+    File.write(output_filename, transcript_hash.deep_stringify_keys.to_yaml)
   end
 
 end

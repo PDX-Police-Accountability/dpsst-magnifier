@@ -17,17 +17,17 @@ RSpec.describe DpsstServices::TranscriptSummarizer do
       summarizer.execute
 
       expect(summarizer).to have_received(:write_summary_markdown_file).
-        with(anything, anything, :name).
-        with(anything, anything, :dpsst_identifier).
-        with(anything, anything, :agency).
-        with(anything, anything, :employment_status).
-        with(anything, anything, :rank).
-        with(anything, anything, :last_action).
-        with(anything, anything, :last_action_date)
+        with(anything, anything, 'name').
+        with(anything, anything, 'dpsst_identifier').
+        with(anything, anything, 'agency').
+        with(anything, anything, 'employment_status').
+        with(anything, anything, 'rank').
+        with(anything, anything, 'last_action').
+        with(anything, anything, 'last_action_date')
 
-      expect(summarizer).to have_received(:write_summary_tsv_all).with([:name, :dpsst_identifier, :agency, :employment_status, :rank, :last_action, :last_action_date], anything)
-      expect(summarizer).to have_received(:write_summary_tsv_active).with([:name, :dpsst_identifier, :agency, :employment_status, :rank, :last_action, :last_action_date], anything)
-      expect(summarizer).to have_received(:write_summary_tsv_inactive).with([:name, :dpsst_identifier, :agency, :employment_status, :rank, :last_action, :last_action_date], anything)
+      expect(summarizer).to have_received(:write_summary_tsv_all).with(['name', 'dpsst_identifier', 'agency', 'employment_status', 'rank', 'last_action', 'last_action_date'], anything)
+      expect(summarizer).to have_received(:write_summary_tsv_active).with(['name', 'dpsst_identifier', 'agency', 'employment_status', 'rank', 'last_action', 'last_action_date'], anything)
+      expect(summarizer).to have_received(:write_summary_tsv_inactive).with(['name', 'dpsst_identifier', 'agency', 'employment_status', 'rank', 'last_action', 'last_action_date'], anything)
     end
 
     xit 'includes all officers in the summary' do
@@ -58,14 +58,14 @@ RSpec.describe DpsstServices::TranscriptSummarizer do
       it 'has data' do
         yaml = YAML.load_file(file)
         record = summarizer.summarize_transcript(dpsst_id, yaml)
-				expect(record).to have_key(:name)
-				expect(record).to have_key(:dpsst_identifier)
-        expect(record).to have_key(:agency)
-				expect(record).to have_key(:employment_status)
-				expect(record).to have_key(:rank)
-				expect(record).to have_key(:last_action)
-				expect(record).to have_key(:last_action_date)
-				expect(record).to have_key(:links)
+				expect(record).to have_key('name')
+				expect(record).to have_key('dpsst_identifier')
+        expect(record).to have_key('agency')
+				expect(record).to have_key('employment_status')
+				expect(record).to have_key('rank')
+				expect(record).to have_key('last_action')
+				expect(record).to have_key('last_action_date')
+				expect(record).to have_key('links')
       end
     end
 

@@ -16,10 +16,6 @@ class DpsstServices::TranscriptMarkdowner
     File.write(output_filename, md)
   end
 
-  def dpsst_identifier
-    @transcript_hash.dig(:header_record, :dpsst_identifier)
-  end
-
   def hash_to_markdown
     return "## missing_transcript" + "\n" if transcript_hash[:missing_transcript]
 

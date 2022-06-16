@@ -12,7 +12,7 @@ class DpsstServices::TrainingSummarizer
     @yaml_dir = yaml_dir
     @summary_dir = summary_dir
     @output_filename = "#{summary_dir}/officer-training-records.tsv"
-    @columns = [:dpsst_identifier, :date, :course, :title, :status, :score, :hours]
+    @columns = %w(dpsst_identifier date course title status score hours)
   end
 
   def execute
@@ -22,10 +22,8 @@ class DpsstServices::TrainingSummarizer
   end
 
   def write_training_tsv(cols, records)
-    headers = cols.map(&:to_s)
-
     CSV.open(output_filename, "w", col_sep: "\t") do |tsv|
-      tsv << headers
+      tsv << cols
       records.each do |row|
         tsv << row
       end
@@ -37,9 +35,9 @@ class DpsstServices::TrainingSummarizer
       dpsst_id = extract_id_from_filename(filename)
       yaml = YAML.load_file(filename)
 
-      next if yaml[:training_records].blank?
+      next if yaml['training_records'].blank?
 
-      yaml[:training_records].each do |record|
+      yaml['training_records'].each do |record|
         records << [dpsst_id].concat(record.values)
       end
 
