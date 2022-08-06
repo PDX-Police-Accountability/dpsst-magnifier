@@ -14,4 +14,8 @@ TODO...
 
 ### Usage
 
-TODO...
+Runs daily via cron as the last piece of the scraping and magnifying process.
+<pre>
+3 0 * * * BASH_ENV=~/.bashrc bash -l -c "cd /home/marc/work/dpsst-scraper && bundle exec ruby -r './dpsst_scraper.rb' -e 'scrape_dpsst'"
+3 1 * * * BASH_ENV=~/.bashrc bash -l -c "cd /home/marc/work/dpsst-magnifier && ./scripts/processor.sh `date +\%F`"
+</pre>
