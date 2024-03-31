@@ -90,7 +90,7 @@ puts "   ===> #{dpsst_id}"
       record = yaml['header_record'].reject { |key, _val| ignored_header_columns.include?(key) }
 
       latest_agency_record = yaml['employment_records'].select do |r|
-        r['agency'] == 'Portland Police Bureau'
+        r['agency'] == record['agency']
       end.sort do |a, b|
         Date.strptime(b['date'], '%m/%d/%Y') <=> Date.strptime(a['date'], '%m/%d/%Y')
       end.first
@@ -99,7 +99,7 @@ puts "   ===> #{dpsst_id}"
 
       last_action_date = ''
 
-      begin  
+      begin
         last_action_date = Date.strptime(latest_agency_record['date'], '%m/%d/%Y').strftime('%Y-%m-%d')
       rescue Date::Error => _date_error
       rescue TypeError => _type_error
