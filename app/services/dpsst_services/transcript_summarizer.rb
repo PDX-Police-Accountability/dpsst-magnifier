@@ -34,9 +34,12 @@ class DpsstServices::TranscriptSummarizer
   def write_summary_json_data_array(cols, records)
     filename = "#{summary_dir}/officer-transcripts.json"
 
+    # Sort the data by the last_action_date column.
+    last_action_date_index = columns.index('last_action_date')
+
     a = records.map do |row|
       row.values[0..-2] # Leave off the links column
-    end
+    end.sort { |a, b| b[last_action_date_index] <=> a[last_action_date_index] }
 
     File.open(filename, "w") do |f|
       f.write({ data: a }.to_json)
